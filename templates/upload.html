@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+
+<body>
+    <h1>Upload Image</h1>
+    <form id="uploadForm" method="post" enctype="multipart/form-data">
+        <label for="imageFile">Select Image:</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*">
+        <input type="file" id="imageFile2" name="imageFile2" accept="image/*">
+        <br>
+        <button type="submit">Upload</button>
+    </form>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const file = document.getElementById('imageFile').files[0];
+            const file2 = document.getElementById('imageFile2').files[0];
+
+            if (!file) {
+                alert("Please select an image file!");
+                return;
+            }
+
+            // Replace 'YOUR_API_URL' with the actual URL of your image upload API
+            const url = 'http://127.0.0.1:5001/upload';
+            // const url = 'https://172.19.99.252:5001/upload';
+            // const url = 'https://192.168.220.11:5001/upload';
+
+            const data = new FormData();
+            data.append('imageFile', file);
+            data.append('imageFile2', file2);
+
+            fetch(url, {
+                method: 'POST',
+                body: data,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(error => {
+                            throw new Error(error);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Image uploaded successfully!');
+
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('An error occurred while uploading the image! ' + error.message);
+                });
+        });
+    </script>
+</body>
+
+</html>
